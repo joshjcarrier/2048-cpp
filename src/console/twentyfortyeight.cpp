@@ -83,6 +83,62 @@ public:
         return true;
     }
 
+    void collapse(MoveDirection direction) {
+        switch (direction) {
+            case MoveDirection::RIGHT:
+                for (int y = 0; y < 4; y++) {
+                    // scans from right to left
+                    int xCollide = 3;
+                    for (int x = 4 - 2; x >= 0; x--) {
+
+                        int value = board[y][x];
+
+                        // nothing to do here
+                        if (value <= 0) {
+                            continue;
+                        }
+
+                        // if can collapse
+                        if (value == board[y][xCollide]) {
+                            // remove current tile
+                            board[y][x] = 0;
+
+                            // collapse
+                            board[y][xCollide] += 1;
+                        }
+
+                        // if can slide
+                        else if (board[y][xCollide] <= 0) {
+                            // remove current tile
+                            board[y][x] = 0;
+
+                            // slide
+                            board[y][xCollide] = value;
+                        }
+                        // if can slide next to
+                        else if (board[y][xCollide - 1] <= 0) {
+                            // remove current tile
+                            board[y][x] = 0;
+
+                            // slide
+                            board[y][xCollide - 1] = value;
+
+                            // next collision is with this tile
+                            xCollide = xCollide - 1;
+                        }
+                        else {
+                            // next collision is with this tile
+                            xCollide = x;
+                        }
+                    }
+                }
+                break;
+            default:
+                std::cout << "Not yet implemented" << std::endl;
+                break;
+        }
+    }
+
     void print() {
         std::cout << " +---+---+---+---+" << std::endl;
         for (int y = 0; y < 4; y++) {
@@ -109,7 +165,7 @@ int main() {
     while (true) {
         board.print();
         MoveDirection direction = directionReader.next();
-        std::cout << (int)direction << std::endl;
+        board.collapse(direction);
         board.addTile();
     }
 
