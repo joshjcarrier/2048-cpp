@@ -73,7 +73,7 @@ START_TIME = date '+%s' > $(TIME_FILE)
 END_TIME = read st < $(TIME_FILE) ; \
 	$(RM) $(TIME_FILE) ; \
 	st=$$((`date '+%s'` - $$st - 86400)) ; \
-	echo `date -u -d @$$st '+%H:%M:%S'`
+	echo `date '+%H:%M:%S'`
 
 # Version macros
 # Comment/remove this section to remove versioning
