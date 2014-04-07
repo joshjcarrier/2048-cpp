@@ -151,7 +151,66 @@ private:
             }
         }
     }
+
+    void collapseVertical(std::queue<std::tuple<int, int>> tileQueue, int collapseDirection, int board[][4]) {
+        int yCollide = collapseDirection > 0 ? 3 : 0;
+
+        std::tuple<int, int> lastCollidable = tileQueue.front();
+        while (!tileQueue.empty()) {
+            std::tuple<int, int> currentTile = tileQueue.front();
+            tileQueue.pop();
+
+            int x = std::get<0>(currentTile);
+            int y = std::get<1>(currentTile);
+            int value = board[y][x];
+
+            // nothing to do here
+            if (value <= 0) {
+                continue;
+            }
+
+            // if can collapse
+            if (value == board[yCollide][x]) {
+                MergeTileOperation tileOperation = MergeTileOperation(x, yCollide, x, y);
+                tileOperation.execute(board);
+
+                // next collision is with the next tile
+                yCollide = yCollide - collapseDirection;
+            }
+
+            // if can slide
+            else if (board[yCollide][x] <= 0) {
+                //board[y][xCollide] = value;
+                MoveTileOperation tileOperation = MoveTileOperation(x, yCollide, x, y);
+                tileOperation.execute(board);
+            }
+            // if can slide next to
+            else if (board[y - collapseDirection][x] <= 0) {
+                // next collision is with this tile
+                yCollide = yCollide - collapseDirection;
+
+                MoveTileOperation tileOperation = MoveTileOperation(x, yCollide, x, y);
+                tileOperation.execute(board);
+            }
+            else {
+                // next collision is with this tile
+                yCollide = y;
+            }
+        }
+    }
 public:
+    void collapseDown(int board[][4]) {
+        for (int x = 0; x < 4; x++) {
+
+            std::queue<std::tuple<int, int>> tileQueue;
+            for (int y = 4 - 2; y >= 0; y--) {
+                tileQueue.push(std::tuple<int, int>(x, y));
+            }
+
+            collapseVertical(tileQueue, 1, board);
+        }
+    }
+
     void collapseLeft(int board[][4]) {
         for (int y = 0; y < 4; y++) {
 
@@ -173,6 +232,18 @@ public:
             }
 
             collapseHorizontal(tileQueue, 1, board);
+        }
+    }
+
+    void collapseUp(int board[][4]) {
+        for (int x = 0; x < 4; x++) {
+
+            std::queue<std::tuple<int, int>> tileQueue;
+            for (int y = 1; y < 4; y++) {
+                tileQueue.push(std::tuple<int, int>(x, y));
+            }
+
+            collapseVertical(tileQueue, -1, board);
         }
     }
 };
@@ -237,11 +308,17 @@ public:
     void collapse(MoveDirection direction) {
         CollapseStrategy cs;
         switch (direction) {
+            case MoveDirection::DOWN:
+                cs.collapseDown(board);
+                break;
             case MoveDirection::LEFT:
                 cs.collapseLeft(board);
             break;
             case MoveDirection::RIGHT:
                 cs.collapseRight(board);
+                break;
+            case MoveDirection::UP:
+                cs.collapseUp(board);
                 break;
             default:
                 std::cout << "Not yet implemented" << std::endl;
