@@ -93,8 +93,84 @@ public:
     }
 };
 
+
+#include <queue>
+
+class CollapseStrategy {
+private:
+    void collapseHorizontal(std::queue<std::tuple<int, int>> tileQueue, int collapseDirection, int board[][4]) {
+        int xCollide = collapseDirection > 0 ? 3 : 0;
+
+        std::tuple<int, int> lastCollidable = tileQueue.front();
+        while (!tileQueue.empty()) {
+            std::tuple<int, int> currentTile = tileQueue.front();
+            tileQueue.pop();
+
+            int x = std::get<0>(currentTile);
+            int y = std::get<1>(currentTile);
+            int value = board[y][x];
+
+            // nothing to do here
+            if (value <= 0) {
+                continue;
+            }
+
+            // if can collapse
+            if (value == board[y][xCollide]) {
+                MergeTileOperation tileOperation = MergeTileOperation(xCollide, y, x, y);
+                tileOperation.execute(board);
+
+                // next collision is with the next tile
+                xCollide = xCollide - collapseDirection;
+            }
+
+            // if can slide
+            else if (board[y][xCollide] <= 0) {
+                //board[y][xCollide] = value;
+                MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                tileOperation.execute(board);
+            }
+            // if can slide next to
+            else if (board[y][xCollide - collapseDirection] <= 0) {
+                // next collision is with this tile
+                xCollide = xCollide - collapseDirection;
+
+                MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                tileOperation.execute(board);
+            }
+            else {
+                // next collision is with this tile
+                xCollide = x;
+            }
+        }
+    }
+public:
+    void collapseLeft(int board[][4]) {
+        for (int y = 0; y < 4; y++) {
+
+            std::queue<std::tuple<int, int>> tileQueue;
+            for (int x = 1; x < 4; x++) {
+                tileQueue.push(std::tuple<int, int>(x, y));
+            }
+
+            collapseHorizontal(tileQueue, -1, board);
+        }
+    }
+
+    void collapseRight(int board[][4]) {
+        for (int y = 0; y < 4; y++) {
+
+            std::queue<std::tuple<int, int>> tileQueue;
+            for (int x = 4 - 2; x >= 0; x--) {
+                tileQueue.push(std::tuple<int, int>(x, y));
+            }
+
+            collapseHorizontal(tileQueue, 1, board);
+        }
+    }
+};
+
 #include <cstdlib>
-#include <stack>
 
 class GameBoard {
 private:
@@ -131,86 +207,13 @@ public:
     }
 
     void collapse(MoveDirection direction) {
+        CollapseStrategy cs;
         switch (direction) {
             case MoveDirection::LEFT:
-                for (int y = 0; y < 4; y++) {
-                    // scans from right to left
-                    int xCollide = 0;
-                    for (int x = 1; x < 4; x++) {
-
-                    int value = board[y][x];
-
-                    // nothing to do here
-                    if (value <= 0) {
-                        continue;
-                    }
-
-                    // if can collapse
-                    if (value == board[y][xCollide]) {
-                        MergeTileOperation tileOperation = MergeTileOperation(xCollide, y, x, y);
-                        tileOperation.execute(board);
-                    }
-
-                    // if can slide
-                    else if (board[y][xCollide] <= 0) {
-                        //board[y][xCollide] = value;
-                        MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
-                        tileOperation.execute(board);
-                    }
-                    // if can slide next to
-                    else if (board[y][xCollide + 1] <= 0) {
-                        // next collision is with this tile
-                        xCollide = xCollide + 1;
-
-                        MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
-                        tileOperation.execute(board);
-                    }
-                    else {
-                        // next collision is with this tile
-                        xCollide = x;
-                    }
-                }
-            }
+                cs.collapseLeft(board);
             break;
             case MoveDirection::RIGHT:
-                for (int y = 0; y < 4; y++) {
-                    // scans from right to left
-                    int xCollide = 3;
-                    for (int x = 4 - 2; x >= 0; x--) {
-
-                        int value = board[y][x];
-
-                        // nothing to do here
-                        if (value <= 0) {
-                            continue;
-                        }
-
-                        // if can collapse
-                        if (value == board[y][xCollide]) {
-                            MergeTileOperation tileOperation = MergeTileOperation(xCollide, y, x, y);
-                            tileOperation.execute(board);
-                        }
-
-                        // if can slide
-                        else if (board[y][xCollide] <= 0) {
-                            //board[y][xCollide] = value;
-                            MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
-                            tileOperation.execute(board);
-                        }
-                        // if can slide next to
-                        else if (board[y][xCollide - 1] <= 0) {
-                            // next collision is with this tile
-                            xCollide = xCollide - 1;
-
-                            MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
-                            tileOperation.execute(board);
-                        }
-                        else {
-                            // next collision is with this tile
-                            xCollide = x;
-                        }
-                    }
-                }
+                cs.collapseRight(board);
                 break;
             default:
                 std::cout << "Not yet implemented" << std::endl;
