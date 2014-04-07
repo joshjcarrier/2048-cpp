@@ -54,24 +54,19 @@ bool tfecore::GameBoard::addTile() {
     return true;
 }
 
-void tfecore::GameBoard::collapse(MoveDirection direction) {
+bool tfecore::GameBoard::collapse(MoveDirection direction) {
     tfecore::CollapseStrategy cs;
     switch (direction) {
         case tfecore::MoveDirection::DOWN:
-            cs.collapseDown(board);
-            break;
+            return cs.collapseDown(board);
         case tfecore::MoveDirection::LEFT:
-            cs.collapseLeft(board);
-        break;
+            return cs.collapseLeft(board);
         case tfecore::MoveDirection::RIGHT:
-            cs.collapseRight(board);
-            break;
+            return cs.collapseRight(board);
         case tfecore::MoveDirection::UP:
-            cs.collapseUp(board);
-            break;
+            return cs.collapseUp(board);
         default:
-            std::cout << "Not yet implemented" << std::endl;
-            break;
+            return false;
     }
 }
 

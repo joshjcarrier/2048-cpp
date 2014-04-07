@@ -15,7 +15,7 @@ namespace tfecore {
 
         bool addTile();
 
-        void collapse(tfecore::MoveDirection direction);
+        bool collapse(tfecore::MoveDirection direction);
 
         void print();
     };

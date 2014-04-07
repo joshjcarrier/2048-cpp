@@ -47,10 +47,11 @@ int main() {
     while (true) {
         board.print();
         tfecore::MoveDirection direction = directionReader.next();
-        board.collapse(direction);
-        if (!board.addTile()) {
-            std::cout << "YOU LOSE! GAME OVER!" << std::endl;
-            break;
+        if (board.collapse(direction)) {
+            if (!board.addTile()) {
+                std::cout << "YOU LOSE! GAME OVER!" << std::endl;
+                break;
+            }
         }
     }
 
