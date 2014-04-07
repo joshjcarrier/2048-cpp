@@ -179,8 +179,10 @@ private:
 
 public:
     GameBoard() {
-        for (int i = 0; i < 2; i++) {
-            addTile();
+        for (int i = 0; i < 2;) {
+            if(addTile()) {
+                i++;
+            }
         }
     }
 
@@ -192,9 +194,27 @@ public:
             int yPos = std::get<1>(tile);
 
             if (board[yPos][xPos] > 0) {
-                // TODO check if any spot is possible
-                //return false;
-                continue;
+                // check if any spot is possible
+                bool movePossible = false;
+                for (int y = 0; y < 4; y++) {
+                    for (int x = 0; x < 4; x++) {
+                        if (board[y][x] <= 0) {
+                            movePossible = true;
+                            break;
+                        }
+                    }
+
+                    if (movePossible) {
+                        break;
+                    }
+                }
+
+                if (movePossible) {
+                    continue;
+                }
+                else {
+                    return false;
+                }
             }
 
             break;
@@ -248,7 +268,10 @@ int main() {
         board.print();
         MoveDirection direction = directionReader.next();
         board.collapse(direction);
-        board.addTile();
+        if (!board.addTile()) {
+            std::cout << "YOU LOSE! GAME OVER!" << std::endl;
+            break;
+        }
     }
 
     return 0;
