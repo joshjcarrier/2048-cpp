@@ -132,6 +132,46 @@ public:
 
     void collapse(MoveDirection direction) {
         switch (direction) {
+            case MoveDirection::LEFT:
+                for (int y = 0; y < 4; y++) {
+                    // scans from right to left
+                    int xCollide = 0;
+                    for (int x = 1; x < 4; x++) {
+
+                    int value = board[y][x];
+
+                    // nothing to do here
+                    if (value <= 0) {
+                        continue;
+                    }
+
+                    // if can collapse
+                    if (value == board[y][xCollide]) {
+                        MergeTileOperation tileOperation = MergeTileOperation(xCollide, y, x, y);
+                        tileOperation.execute(board);
+                    }
+
+                    // if can slide
+                    else if (board[y][xCollide] <= 0) {
+                        //board[y][xCollide] = value;
+                        MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                        tileOperation.execute(board);
+                    }
+                    // if can slide next to
+                    else if (board[y][xCollide + 1] <= 0) {
+                        // next collision is with this tile
+                        xCollide = xCollide + 1;
+
+                        MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                        tileOperation.execute(board);
+                    }
+                    else {
+                        // next collision is with this tile
+                        xCollide = x;
+                    }
+                }
+            }
+            break;
             case MoveDirection::RIGHT:
                 for (int y = 0; y < 4; y++) {
                     // scans from right to left
