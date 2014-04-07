@@ -25,6 +25,10 @@ DLINK_FLAGS =
 DESTDIR = /
 # Install path (bin/ is appended automatically)
 INSTALL_PREFIX = usr/local
+# Lint used
+LINT = cppcheck
+# Additional lint flags
+LINT_FLAGS = --enable=all --suppress=missingIncludeSystem -I $(SRC_PATH)/core
 #### END PROJECT SETTINGS ####
 
 # Generally should not need to edit below this line
@@ -92,6 +96,11 @@ override CXXFLAGS := $(CXXFLAGS) \
 	-D VERSION_PATCH=$(VERSION_PATCH) \
 	-D VERSION_REVISION=$(VERSION_REVISION) \
 	-D VERSION_HASH=\"$(VERSION_HASH)\"
+
+.PHONE: checked
+checked:
+	@echo "Checking for code analysis issues"
+	$(LINT) $(LINT_FLAGS) $(SRC_PATH)
 
 # Standard, non-optimized release build
 .PHONY: release

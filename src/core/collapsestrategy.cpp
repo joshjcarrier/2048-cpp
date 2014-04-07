@@ -60,8 +60,7 @@ public:
 bool tfecore::CollapseStrategy::collapseHorizontal(std::queue<std::tuple<int, int>> tileQueue, int collapseDirection, int board[][4]) {
     int xCollide = collapseDirection > 0 ? 3 : 0;
 
-    bool collapsed;
-    std::tuple<int, int> lastCollidable = tileQueue.front();
+    bool collapsed = false;
     while (!tileQueue.empty()) {
         std::tuple<int, int> currentTile = tileQueue.front();
         tileQueue.pop();
@@ -113,7 +112,6 @@ bool tfecore::CollapseStrategy::collapseVertical(std::queue<std::tuple<int, int>
     int yCollide = collapseDirection > 0 ? 3 : 0;
 
     bool collapsed = false;
-    std::tuple<int, int> lastCollidable = tileQueue.front();
     while (!tileQueue.empty()) {
         std::tuple<int, int> currentTile = tileQueue.front();
         tileQueue.pop();

@@ -17,19 +17,15 @@ public:
 
             if (keyCode == 97) {
                 return tfecore::MoveDirection::LEFT;
-                break;
             }
             else if (keyCode == 115) {
                 return tfecore::MoveDirection::DOWN;
-                break;
             }
             else if (keyCode == 100) {
                 return tfecore::MoveDirection::RIGHT;
-                break;
             }
             else if (keyCode == 119) {
                 return tfecore::MoveDirection::UP;
-                break;
             }
         }
     }
