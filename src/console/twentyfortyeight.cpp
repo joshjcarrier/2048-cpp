@@ -35,10 +35,12 @@ public:
     }
 };
 
+#include <time.h>
+
 class TileGenerator {
 public:
     TileGenerator() {
-        std::srand(0);
+        std::srand(time(NULL));
     }
 
     std::tuple<int, int, int> next() {
@@ -133,7 +135,6 @@ private:
 
             // if can slide
             else if (board[y][xCollide] <= 0) {
-                //board[y][xCollide] = value;
                 MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
                 tileOperation.execute(board);
             }
@@ -180,7 +181,6 @@ private:
 
             // if can slide
             else if (board[yCollide][x] <= 0) {
-                //board[y][xCollide] = value;
                 MoveTileOperation tileOperation = MoveTileOperation(x, yCollide, x, y);
                 tileOperation.execute(board);
             }
