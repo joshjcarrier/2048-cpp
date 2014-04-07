@@ -47,7 +47,54 @@ public:
     }
 };
 
+class TileOperation {
+public:
+    virtual void execute(int board[][4]) = 0;
+};
+
+class MergeTileOperation : public TileOperation {
+    int _xDest, _yDest, _xTarget, _yTarget;
+
+public:
+    MergeTileOperation(int xDest, int yDest, int xTarget, int yTarget) {
+        _xDest = xDest;
+        _yDest = yDest;
+        _xTarget = xTarget;
+        _yTarget = yTarget;
+    }
+
+    virtual void execute(int board[][4]) override {
+        // remove current tile
+        board[_yTarget][_xTarget] = 0;
+
+        // merge
+        board[_yDest][_xDest] += 1;
+    }
+};
+
+class MoveTileOperation : public TileOperation {
+    int _xDest, _yDest, _xTarget, _yTarget;
+
+public:
+    MoveTileOperation(int xDest, int yDest, int xTarget, int yTarget) {
+        _xDest = xDest;
+        _yDest = yDest;
+        _xTarget = xTarget;
+        _yTarget = yTarget;
+    }
+
+    virtual void execute(int board[][4]) override {
+        int value = board[_yTarget][_xTarget];
+        // remove current tile
+        board[_yTarget][_xTarget] = 0;
+
+        // slide
+        board[_yDest][_xDest] = value;
+    }
+};
+
 #include <cstdlib>
+#include <stack>
 
 class GameBoard {
 private:
@@ -100,31 +147,23 @@ public:
 
                         // if can collapse
                         if (value == board[y][xCollide]) {
-                            // remove current tile
-                            board[y][x] = 0;
-
-                            // collapse
-                            board[y][xCollide] += 1;
+                            MergeTileOperation tileOperation = MergeTileOperation(xCollide, y, x, y);
+                            tileOperation.execute(board);
                         }
 
                         // if can slide
                         else if (board[y][xCollide] <= 0) {
-                            // remove current tile
-                            board[y][x] = 0;
-
-                            // slide
-                            board[y][xCollide] = value;
+                            //board[y][xCollide] = value;
+                            MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                            tileOperation.execute(board);
                         }
                         // if can slide next to
                         else if (board[y][xCollide - 1] <= 0) {
-                            // remove current tile
-                            board[y][x] = 0;
-
-                            // slide
-                            board[y][xCollide - 1] = value;
-
                             // next collision is with this tile
                             xCollide = xCollide - 1;
+
+                            MoveTileOperation tileOperation = MoveTileOperation(xCollide, y, x, y);
+                            tileOperation.execute(board);
                         }
                         else {
                             // next collision is with this tile
