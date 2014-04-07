@@ -42,7 +42,7 @@ public:
     }
 
     std::tuple<int, int, int> next() {
-        int value = std::rand() % 10 == 0 ? 2 : 1;
+        int value = std::rand() % 9 == 0 ? 2 : 1;
         return std::tuple<int, int, int>(std::rand() % 4, std::rand() % 4, value);
     }
 };
@@ -69,6 +69,13 @@ public:
 
         // merge
         board[_yDest][_xDest] += 1;
+
+        // huh
+        if (board[_yDest][_xDest] == 11) {
+            std::cout << "~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~" << std::endl;
+            std::cout << "~~~~! Congratulations on making 2048 !~~~" << std::endl;
+            std::cout << "~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~" << std::endl;
+        }
     }
 };
 
@@ -171,6 +178,7 @@ public:
 };
 
 #include <cstdlib>
+#include <iomanip>
 
 class GameBoard {
 private:
@@ -242,15 +250,15 @@ public:
     }
 
     void print() {
-        std::cout << " +---+---+---+---+" << std::endl;
+        std::cout << " +-------+-------+-------+-------+" << std::endl;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 int val = board[y][x] > 0 ? (1 << board[y][x]) : 0;
-                std::cout << " | " << val;
+                std::cout << " | " << std::setw(5) << val;
             }
 
             std::cout << " |" << std::endl;
-            std::cout << " +---+---+---+---+" << std::endl;
+            std::cout << " +-------+-------+-------+-------+" << std::endl;
         }
 
         std::cout << std:: endl;
