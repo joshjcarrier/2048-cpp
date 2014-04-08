@@ -97,11 +97,6 @@ override CXXFLAGS := $(CXXFLAGS) \
 	-D VERSION_REVISION=$(VERSION_REVISION) \
 	-D VERSION_HASH=\"$(VERSION_HASH)\"
 
-.PHONE: checked
-checked:
-	@echo "Checking for code analysis issues"
-	$(LINT) $(LINT_FLAGS) $(SRC_PATH)
-
 # Standard, non-optimized release build
 .PHONY: release
 release: dirs
@@ -147,6 +142,12 @@ clean:
 	@echo "Deleting directories"
 	@$(RM) -r build
 	@$(RM) -r bin
+
+# Static code analysis
+.PHONY: checked
+checked:
+	@echo "Checking for code analysis hihi issues"
+	$(LINT) $(LINT_FLAGS) $(SRC_PATH)
 
 # Main rule, checks the executable and symlinks to the output
 all: $(BIN_PATH)/$(BIN_NAME)

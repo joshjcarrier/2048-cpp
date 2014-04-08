@@ -142,7 +142,7 @@ bool tfecore::CollapseStrategy::collapseVertical(std::queue<std::tuple<int, int>
             collapsed = true;
         }
         // if can slide next to
-        else if (board[y - collapseDirection][x] <= 0) {
+        else if (board[yCollide - collapseDirection][x] <= 0) {
             // next collision is with this tile
             yCollide = yCollide - collapseDirection;
 
