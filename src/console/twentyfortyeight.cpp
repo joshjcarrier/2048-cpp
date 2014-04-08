@@ -1,6 +1,6 @@
 #include <iostream>
+#include <ncurses.h>
 #include "gameboard.h"
-
 
 class ConsoleMoveDirectionReader {
 
@@ -8,12 +8,12 @@ public:
     tfecore::MoveDirection next() {
 
         while (true) {
-            std::cout << "WASD then <enter> to move: ";
-            int keyCode = std::cin.get();
+            printw("WASD then <enter> to move: ");
+            int keyCode = getch();
 
             // ignore subsequent characters so next read is fresh
-            std::cin.clear();
-            std::cin.ignore(INT_MAX,'\n');
+            //std::cin.clear();
+            //std::cin.ignore(INT_MAX,'\n');
 
             if (keyCode == 97) {
                 return tfecore::MoveDirection::LEFT;
@@ -34,7 +34,17 @@ public:
 #include <stdlib.h>
 
 int main(int argc, char** argv) {
-    std::cout << "[ TwentyFortyEight ]" << std::endl;
+    initscr();
+    cbreak(); // don't wait for line break
+    noecho(); // don't show user's keypresses
+
+    start_color();
+    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
+    attron(COLOR_PAIR(1));
+    printw("[ TwentyFortyEight ]");
+    attroff(COLOR_PAIR(1));
+    refresh();
+    getch();
 
     size_t boardSize = 4;
     size_t startingTiles = 2;
@@ -63,11 +73,14 @@ int main(int argc, char** argv) {
         {
             if (!board.canCollapse()) {
                 board.print();
-                std::cout << "GAME OVER!" << std::endl;
+                printw("GAME OVER!");
                 break;
             }
         }
     }
+
+    getch();
+    endwin();
 
     return 0;
 }

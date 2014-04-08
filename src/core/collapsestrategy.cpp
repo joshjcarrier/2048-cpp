@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ncurses.h>
 #include <vector>
 
 class TileOperation {
@@ -26,9 +27,9 @@ public:
 
         // huh
         if (board[_yDest][_xDest] == 11) {
-            std::cout << "~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~" << std::endl;
-            std::cout << "~~~~! Congratulations on making 2048 !~~~" << std::endl;
-            std::cout << "~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~" << std::endl;
+            printw("~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~");
+            printw("~~~~! Congratulations on making 2048 !~~~");
+            printw("~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~");
         }
     }
 };

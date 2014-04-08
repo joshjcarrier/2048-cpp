@@ -73,6 +73,8 @@ bool tfecore::GameBoard::collapse(MoveDirection direction) {
     }
 }
 
+// should move out this console-specific writing
+#include <ncurses.h>
 void tfecore::GameBoard::print() {
 
     // yeah, let's rebuild the string every print. good idea.
@@ -81,16 +83,46 @@ void tfecore::GameBoard::print() {
         rowBorder += std::string("-------+");
     }
 
-    std::cout << rowBorder << std::endl;
+    size_t rowCount = 0;
+    move(rowCount, 0);
+
+    clear();
+    printw(rowBorder.c_str());
+    move(rowCount, 0);
+    rowCount++;
+
     for (const auto &row : board) {
+        int colCount = 1;
         for (const auto &value : row) {
             int val = value > 0 ? (1 << value) : 0;
-            std::cout << " | " << std::setw(5) << val;
+
+            move(rowCount, colCount);
+            printw("|");
+
+            colCount += 2;
+            move(rowCount, colCount);
+
+            if(value > 0) {
+                attron(COLOR_PAIR(1));
+            }
+
+            printw(std::to_string(val).c_str());
+
+            attroff(COLOR_PAIR(1));
+
+            colCount += 6;
         }
 
-        std::cout << " |" << std::endl;
-        std::cout << rowBorder << std::endl;
+        move(rowCount, colCount);
+        printw("|");
+
+        rowCount++;
+        move(rowCount, 0);
+        printw(rowBorder.c_str());
+
+        move(rowCount, 0);
+        rowCount++;
     }
 
-    std::cout << std:: endl;
+    move(rowCount, 0);
 }

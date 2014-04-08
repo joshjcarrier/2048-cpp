@@ -16,7 +16,7 @@ DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/core $(SRC_PATH)/console
 # General linker settings
-LINK_FLAGS =
+LINK_FLAGS = -lncurses
 # Additional release-specific linker settings
 RLINK_FLAGS =
 # Additional debug-specific linker settings
