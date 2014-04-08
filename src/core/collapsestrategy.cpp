@@ -59,7 +59,7 @@ public:
 #include "collapsestrategy.h"
 
 bool tfecore::CollapseStrategy::collapseHorizontal(std::queue<std::tuple<int, int>> tileQueue, int collapseDirection, std::vector<std::vector<int>> &board) {
-    int xCollide = collapseDirection > 0 ? 3 : 0;
+    size_t xCollide = collapseDirection > 0 ? board[0].size() - 1 : 0;
 
     bool collapsed = false;
     while (!tileQueue.empty()) {
@@ -110,7 +110,7 @@ bool tfecore::CollapseStrategy::collapseHorizontal(std::queue<std::tuple<int, in
 }
 
 bool tfecore::CollapseStrategy::collapseVertical(std::queue<std::tuple<int, int>> tileQueue, int collapseDirection, std::vector<std::vector<int>> &board) {
-    int yCollide = collapseDirection > 0 ? 3 : 0;
+    int yCollide = collapseDirection > 0 ? board.size() - 1 : 0;
 
     bool collapsed = false;
     while (!tileQueue.empty()) {
@@ -162,11 +162,11 @@ bool tfecore::CollapseStrategy::collapseVertical(std::queue<std::tuple<int, int>
 
 bool tfecore::CollapseStrategy::collapseDown(std::vector<std::vector<int>> &board) {
     bool collapsed = false;
-    for (int x = 0; x < 4; x++) {
+    for (size_t x = 0; x < board[0].size(); x++) {
 
         std::queue<std::tuple<int, int>> tileQueue;
-        for (int y = 4 - 2; y >= 0; y--) {
-            tileQueue.push(std::tuple<int, int>(x, y));
+        for (size_t y = board.size() - 1; y > 0; y--) { // -1 to skip edge
+            tileQueue.push(std::tuple<int, int>(x, y - 1)); // -1 for index
         }
 
         collapsed |= collapseVertical(tileQueue, 1, board);
@@ -177,10 +177,10 @@ bool tfecore::CollapseStrategy::collapseDown(std::vector<std::vector<int>> &boar
 
 bool tfecore::CollapseStrategy::collapseLeft(std::vector<std::vector<int>> &board) {
     bool collapsed = false;
-    for (int y = 0; y < 4; y++) {
+    for (size_t y = 0; y < board.size(); y++) {
 
         std::queue<std::tuple<int, int>> tileQueue;
-        for (int x = 1; x < 4; x++) {
+        for (size_t x = 1; x < board[y].size(); x++) {
             tileQueue.push(std::tuple<int, int>(x, y));
         }
 
@@ -192,11 +192,11 @@ bool tfecore::CollapseStrategy::collapseLeft(std::vector<std::vector<int>> &boar
 
 bool tfecore::CollapseStrategy::collapseRight(std::vector<std::vector<int>> &board) {
     bool collapsed = false;
-    for (int y = 0; y < 4; y++) {
+    for (size_t y = 0; y < board.size(); y++) {
 
         std::queue<std::tuple<int, int>> tileQueue;
-        for (int x = 4 - 2; x >= 0; x--) {
-            tileQueue.push(std::tuple<int, int>(x, y));
+        for (size_t x = board[y].size() - 1; x > 0; x--) { // -1 to skip edge
+            tileQueue.push(std::tuple<int, int>(x - 1, y)); // -1 for index
         }
 
         collapsed |= collapseHorizontal(tileQueue, 1, board);
@@ -207,10 +207,10 @@ bool tfecore::CollapseStrategy::collapseRight(std::vector<std::vector<int>> &boa
 
 bool tfecore::CollapseStrategy::collapseUp(std::vector<std::vector<int>> &board) {
     bool collapsed = false;
-    for (int x = 0; x < 4; x++) {
+    for (size_t x = 0; x < board[0].size(); x++) {
 
         std::queue<std::tuple<int, int>> tileQueue;
-        for (int y = 1; y < 4; y++) {
+        for (size_t y = 1; y < board.size(); y++) {
             tileQueue.push(std::tuple<int, int>(x, y));
         }
 

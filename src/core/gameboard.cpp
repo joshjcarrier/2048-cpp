@@ -6,8 +6,10 @@
 #include "gameboard.h"
 #include "tilegenerator.h"
 
-tfecore::GameBoard::GameBoard() {
-    for (int i = 0; i < 2;) {
+tfecore::GameBoard::GameBoard(size_t boardSize, size_t startingTiles) : tileGenerator(boardSize) {
+    board = std::vector<std::vector<int>>(boardSize, std::vector<int>(boardSize, 0)); // initialize board to 0
+
+    for (size_t i = 0; i < startingTiles;) {
         if(addTile()) {
             i++;
         }
@@ -24,9 +26,9 @@ bool tfecore::GameBoard::addTile() {
         if (board[yPos][xPos] > 0) {
             // check if any spot is possible
             bool movePossible = false;
-            for (int y = 0; y < 4; y++) {
-                for (int x = 0; x < 4; x++) {
-                    if (board[y][x] <= 0) {
+            for (const auto &row : board) {
+                for (const auto &value : row) {
+                    if (value <= 0) {
                         movePossible = true;
                         break;
                     }
@@ -71,15 +73,22 @@ bool tfecore::GameBoard::collapse(MoveDirection direction) {
 }
 
 void tfecore::GameBoard::print() {
-    std::cout << " +-------+-------+-------+-------+" << std::endl;
-    for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
-            int val = board[y][x] > 0 ? (1 << board[y][x]) : 0;
+
+    // yeah, let's rebuild the string every print. good idea.
+    std::string rowBorder(" +");
+    for (size_t i = 0; i < board[0].size(); i++) {
+        rowBorder += std::string("-------+");
+    }
+
+    std::cout << rowBorder << std::endl;
+    for (const auto &row : board) {
+        for (const auto &value : row) {
+            int val = value > 0 ? (1 << value) : 0;
             std::cout << " | " << std::setw(5) << val;
         }
 
         std::cout << " |" << std::endl;
-        std::cout << " +-------+-------+-------+-------+" << std::endl;
+        std::cout << rowBorder << std::endl;
     }
 
     std::cout << std:: endl;

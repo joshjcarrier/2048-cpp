@@ -31,12 +31,25 @@ public:
     }
 };
 
+#include <stdlib.h>
 
-
-int main() {
+int main(int argc, char** argv) {
     std::cout << "[ TwentyFortyEight ]" << std::endl;
 
-    tfecore::GameBoard board;
+    size_t boardSize = 4;
+    size_t startingTiles = 2;
+
+    if (argc >= 2) {
+        boardSize = std::atoi(argv[1]);
+        boardSize = boardSize > 1 ? boardSize : 4;
+    }
+
+    if (argc >= 3) {
+        startingTiles = std::atoi(argv[2]);
+        startingTiles = startingTiles > 0 && startingTiles <= boardSize*boardSize ? startingTiles : 2;
+    }
+
+    tfecore::GameBoard board = tfecore::GameBoard(boardSize, startingTiles);
 
     ConsoleMoveDirectionReader directionReader;
 

@@ -9,10 +9,10 @@ namespace tfecore {
     class GameBoard {
     private:
         tfecore::TileGenerator tileGenerator;
-        std::vector<std::vector<int>> board = std::vector<std::vector<int>>(4, std::vector<int>(4, 0)); // initialize board to 0
+        std::vector<std::vector<int>> board;
 
     public:
-        GameBoard();
+        GameBoard(size_t boardSize, size_t startingTiles);
 
         bool addTile();
 
