@@ -25,19 +25,7 @@ bool tfecore::GameBoard::addTile() {
 
         if (board[yPos][xPos] > 0) {
             // check if any spot is possible
-            bool movePossible = false;
-            for (const auto &row : board) {
-                for (const auto &value : row) {
-                    if (value <= 0) {
-                        movePossible = true;
-                        break;
-                    }
-                }
-
-                if (movePossible) {
-                    break;
-                }
-            }
+            bool movePossible = canCollapse();
 
             if (movePossible) {
                 continue;
@@ -54,6 +42,19 @@ bool tfecore::GameBoard::addTile() {
     int yPos = std::get<1>(tile);
     board[yPos][xPos] = std::get<2>(tile);
     return true;
+}
+
+bool tfecore::GameBoard::canCollapse() {
+    // check if any spot is possible
+    for (const auto &row : board) {
+        for (const auto &value : row) {
+            if (value <= 0) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool tfecore::GameBoard::collapse(MoveDirection direction) {
